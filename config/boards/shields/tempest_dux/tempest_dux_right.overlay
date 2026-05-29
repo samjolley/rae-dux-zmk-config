@@ -1,0 +1,65 @@
+/*
+ * Copyright (c) 2024 The ZMK Contributors
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+#include "tempest_dux.dtsi"
+#include <zephyr/dt-bindings/input/input-event-codes.h>
+
+/* Right half: shift columns into the 5-9 block of the transform. */
+&default_transform {
+	col-offset = <5>;
+};
+
+/* ── PMW3610 trackball on its own SPI bus (right half has no display) ── */
+&pinctrl {
+	spi0_default: spi0_default {
+		group1 {
+			psels = <NRF_PSEL(SPIM_SCK,  1, 6)>,   /* P1.06 / &pro_micro 9        */
+			        <NRF_PSEL(SPIM_MOSI, 1, 4)>,   /* P1.04 / &pro_micro 8 (SDIO) */
+			        <NRF_PSEL(SPIM_MISO, 1, 4)>;   /* same pin — 3-wire SDIO      */
+		};
+	};
+	spi0_sleep: spi0_sleep {
+		group1 {
+			psels = <NRF_PSEL(SPIM_SCK,  1, 6)>,
+			        <NRF_PSEL(SPIM_MOSI, 1, 4)>,
+			        <NRF_PSEL(SPIM_MISO, 1, 4)>;
+			low-power-enable;
+		};
+	};
+};
+
+&spi0 {
+	status = "okay";
+	compatible = "nordic,nrf-spim";
+	pinctrl-0 = <&spi0_default>;
+	pinctrl-1 = <&spi0_sleep>;
+	pinctrl-names = "default", "sleep";
+	cs-gpios = <&pro_micro 10 GPIO_ACTIVE_LOW>;   /* PMW_CS / P0.09 */
+
+	trackball: trackball@0 {
+		status = "okay";
+		compatible = "pixart,pmw3610-alt";
+		reg = <0>;
+		spi-max-frequency = <2000000>;
+		/* MOTION: active-low; on-board R1 pull-up is DNP ⇒ enable internal pull-up */
+		irq-gpios = <&pro_micro 21 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>;
+		cpi = <600>;
+		evt-type = <INPUT_EV_REL>;
+		x-input-code = <INPUT_REL_X>;
+		y-input-code = <INPUT_REL_Y>;
+		/* ⚠ VERIFY orientation on first roll; flip as needed: */
+		// swap-xy;
+		// invert-x;
+		// invert-y;
+	};
+};
+
+/ {
+	trackball_listener: trackball_listener {
+		compatible = "zmk,input-listener";
+		device = <&trackball>;
+	};
+};

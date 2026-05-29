@@ -1,0 +1,12 @@
+/*
+ * Copyright (c) 2024 The ZMK Contributors
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+#include "tempest_dux.dtsi"
+
+/*
+ * Left half = display side. The nice!view comes from shield composition
+ * ("tempest_dux_left nice_view_adapter nice_view"); no custom SPI needed here.
+ */

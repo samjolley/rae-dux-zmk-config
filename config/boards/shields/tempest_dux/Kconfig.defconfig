@@ -1,0 +1,28 @@
+# Copyright (c) 2024 The ZMK Contributors
+# SPDX-License-Identifier: MIT
+
+if SHIELD_TEMPEST_DUX_LEFT || SHIELD_TEMPEST_DUX_RIGHT
+
+config ZMK_KEYBOARD_NAME
+	default "tempest-dux"
+
+config ZMK_SPLIT
+	default y
+
+endif
+
+# ── Option (A) bring-up default: RIGHT = central (trackball is local to central) ──
+if SHIELD_TEMPEST_DUX_RIGHT
+
+config ZMK_SPLIT_BLE_ROLE_CENTRAL
+	default y
+
+endif
+
+# ── Option (B) rae_dux parity (LEFT central, trackball forwarded) ──
+# Delete the block above and use this instead, then add a `zmk,input-split`
+# on the central and move the trackball under it on the right peripheral:
+# if SHIELD_TEMPEST_DUX_LEFT
+# config ZMK_SPLIT_BLE_ROLE_CENTRAL
+#     default y
+# endif

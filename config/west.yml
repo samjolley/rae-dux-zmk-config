@@ -4,10 +4,15 @@ manifest:
       url-base: https://github.com/zmkfirmware
     - name: andrewjrae
       url-base: https://github.com/andrewjrae
+    - name: badjeff
+      url-base: https://github.com/badjeff
   projects:
     - name: zmk
       remote: andrewjrae
       revision: andrewjrae
       import: app/west.yml
+    - name: zmk-pmw3610-driver
+      remote: badjeff
+      revision: main
   self:
     path: config
