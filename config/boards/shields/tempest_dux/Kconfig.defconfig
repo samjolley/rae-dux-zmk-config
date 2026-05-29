@@ -17,6 +17,12 @@ if SHIELD_TEMPEST_DUX_RIGHT
 config ZMK_SPLIT_BLE_ROLE_CENTRAL
 	default y
 
+# Enable the badjeff PMW3610 trackball driver on the right half only.
+# The symbol has no default and only its deps (INPUT via ZMK_POINTING, and
+# DT_HAS_PIXART_PMW3610_ALT_ENABLED from the overlay node) are satisfied here.
+config PMW3610_ALT
+	default y
+
 endif
 
 # ── Option (B) rae_dux parity (LEFT central, trackball forwarded) ──
